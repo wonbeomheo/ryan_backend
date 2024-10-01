@@ -13,5 +13,5 @@ class Experience(models.Model):
 
 
 class ExperienceSkill(models.Model):
-    experience = models.ForeignKey(Experience, related_name='experience', on_delete=models.PROTECT)
-    skill = models.ForeignKey(Skill, related_name='skill', on_delete=models.PROTECT)
+    experience = models.ForeignKey(Experience, related_name='experience', on_delete=models.CASCADE)
+    skill = models.ForeignKey(Skill, related_name='skill', on_delete=models.CASCADE)

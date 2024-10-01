@@ -15,14 +15,14 @@ from django.contrib.postgres.aggregates import ArrayAgg
 from skill.models import Skill
 
 from .models import Experience
-from .serializers import ExperienceSerializer
+from .serializers import ExperienceSerializer, ExperienceCreateSerializer
 
 import logging
 
 logger = logging.getLogger("dev.debug")
 
 class ExperienceCreateView(CreateAPIView):
-    serializer_class = ExperienceSerializer
+    serializer_class = ExperienceCreateSerializer
     permission_classes = [IsAuthenticated]
     
 
