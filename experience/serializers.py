@@ -18,19 +18,17 @@ class ExperienceSerializer(ModelSerializer):
     
     
 class ExperienceCreateSerializer(ModelSerializer):
-    skill_list = ListField(
+    skills = ListField(
         child=DictField(), write_only=True
     )
     
     class Meta:
         model = Experience
         fields = "__all__"
-        
+    
     
     def create(self, validated_data):
-        skill_list = validated_data.pop('skill_list', [])
-        
-        experience = Experience.objects.create(**validated_data)
+        skill_list = validated_data.pop('skills', [])
         
         for skill in skill_list:
             skill_id = skill.get('id', None)
@@ -54,5 +52,69 @@ class ExperienceCreateSerializer(ModelSerializer):
                         raise ValidationError(e)
                 else:
                     raise ValidationError(skill_serializer.errors)
-                ExperienceSkill.objects.create(experience=experience, skill=skill_instance)
+        
+        experience = Experience.objects.create(**validated_data)
+        
+        for skill in skill_list:
+            skill_id = skill.get('id', None)
+            skill_name = skill.get('name', None)
+            if skill_id:
+                skill_instance = Skill.objects.get(id=skill_id)
+            if skill_name:
+                skill_instance = Skill.objects.get(name=skill_name)
+            ExperienceSkill.objects.get_or_create(experience=experience, skill=skill_instance)
         return experience
+    
+
+class ExperienceUpdateSerializer(ModelSerializer):
+    skills = ListField(
+        child=DictField(), write_only=True
+    )
+    
+    class Meta:
+        model = Experience
+        fields = "__all__"
+        
+
+    def update(self, instance, validated_data):
+        skills = validated_data.pop('skills', [])
+        ExperienceSkill.objects.filter(experience=instance).delete()
+        
+        for skill in skills:
+            skill_id = skill.get('id', None)
+            skill_category = skill.get('category', None)
+            if skill_id:
+                try:
+                    skill_instance = Skill.objects.get(id=skill_id)
+                except Exception as e:
+                    raise ValidationError(f"Skill with {skill_id} does not exist.")
+            else:
+                skill_serializer = SkillSerializer(data=skill)
+                if skill_serializer.is_valid():
+                    try:
+                        category = Category.objects.get(id=skill_category)
+                    except:
+                        raise ValidationError(f"Category with {skill_category} does not exist.")
+                    try:
+                        skill['category'] = category
+                        skill_instance = Skill.objects.create(**skill)
+                    except Exception as e:
+                        raise ValidationError(e)
+                else:
+                    raise ValidationError(skill_serializer.errors)
+            
+        for skill in skills:
+            skill_id = skill.get('id', None)
+            skill_name = skill.get('name', None)
+            if skill_id:
+                skill_instance = Skill.objects.get(id=skill_id)
+            if skill_name:
+                skill_instance = Skill.objects.get(name=skill_name)
+            ExperienceSkill.objects.get_or_create(experience=instance, skill=skill_instance)
+        
+        for attr, value in validated_data.items():
+            if attr != 'skills':
+                setattr(instance, attr, value)
+        instance.save()
+        
+        return instance

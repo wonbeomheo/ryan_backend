@@ -15,7 +15,7 @@ from django.contrib.postgres.aggregates import ArrayAgg
 from skill.models import Skill
 
 from .models import Experience
-from .serializers import ExperienceSerializer, ExperienceCreateSerializer
+from .serializers import ExperienceSerializer, ExperienceCreateSerializer, ExperienceUpdateSerializer
 
 import logging
 
@@ -51,7 +51,8 @@ class ExperienceListView(ListAPIView):
     
 
 class ExperienceUpdateView(UpdateAPIView):
-    serializer_class = ExperienceSerializer
+    # serializer_class = ExperienceSerializer
+    serializer_class = ExperienceUpdateSerializer
     permission_classes = [IsAuthenticated]
     
     def get_queryset(self):

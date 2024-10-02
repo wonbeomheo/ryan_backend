@@ -13,7 +13,7 @@ class Category(models.Model):
         return self.CategoryOptions[self.name]
     
 class Skill(models.Model):
-    name = models.CharField(max_length=255)
+    name = models.CharField(max_length=255, unique=True, null=False, blank=False)
     category = models.ForeignKey(Category, on_delete=models.CASCADE)
     score = models.IntegerField(
         default=3,
