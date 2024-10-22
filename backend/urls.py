@@ -23,7 +23,7 @@ from blog import urls as blog_urls
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('api/', include(experience_urls)),
+    path('api/experiences/', include(experience_urls)),
     path('api/', include(user_urls)),
     path('api/', include(skill_urls)),
     path('api/', include(blog_urls)),

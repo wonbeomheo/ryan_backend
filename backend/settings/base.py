@@ -45,6 +45,7 @@ DEFAULT_APPS = [
 
 THIRD_PARTY_APPS = [
     'rest_framework',
+    'rest_framework_simplejwt.token_blacklist',
     'dotenv',
     'corsheaders'
 ]
@@ -202,8 +203,37 @@ REST_FRAMEWORK = {
 
 SIMPLE_JWT = {
     "ACCESS_TOKEN_LIFETIME": timedelta(minutes=30),
-    "REFRESH_TOKEN_LIFETIME": timedelta(days=1)
+    "REFRESH_TOKEN_LIFETIME": timedelta(days=1),
+    
+    # custom
+    "AUTH_COOKIE": "access",
+    "AUTH_COOKIE_REFRESH": "refresh",
+    "AUTH_COOKIE_DOMAIN": None,
+    "AUTH_COOKIE_SECURE": True,
+    "AUTH_COOKIE_HTTP_ONLY": True,
+    "AUTH_COOKIE_PATH": "/",
+    "AUTH_COOKIE_SAMESITE": "None"
 }
 
-CORS_ALLOW_ALL_ORIGINS = True
+CORS_ALLOW_ORIGINS = [
+    'https://ryanheo.org',
+    'http://127.0.0.1:3000',
+    'http://localhost:3000'
+]
 CORS_ALLOWS_CRENDENTIALS = True
+CSRF_COOKIE_SECURE = True
+CSRF_COOKIE_HTTP_ONLY=True
+CSRF_TRUSTED_ORIGINS = [
+    'https://ryanheo.org',
+    'http://127.0.0.1:3000',
+    'http://localhost:3000'
+]
+CORF_EXPOSE_HEADERS = [
+    'Content-Type',
+    'X-CSRFToken'
+]
+SESSION_COOKIE_SECURE = True
+CSRF_COOKIE_SAMESITE = "Lax"
+SESSION_COOKIE_SAMESITE = "Lax"
+
+APPEND_SLASH = True
