@@ -27,12 +27,13 @@ class UserSerializer(ModelSerializer):
 
 class UserRegistrationSerializer(ModelSerializer):
     
-    password2 = CharField(style={"input_type": "password"})
+    password2 = CharField(style={"input_type": "password"}, write_only=True)
     
     class Meta:
         model = User
-        fields = ["id", "email", "password", "password2"]
+        fields = ["id", "name", "email", "password", "password2"]
         extra_kwargs = {
+            "name": {"required": True},
             "password": {"write_only": True},
             "password2": {"write_only": True},
         }
@@ -43,6 +44,8 @@ class UserRegistrationSerializer(ModelSerializer):
         
         if password != password2:
             raise ValidationError({"password": "Passwords do not match."})
+        
+        del validated_data['password2']
         
         user = User.objects.create_user(**validated_data)
         return user

@@ -7,6 +7,7 @@ from .models import User
 from .serializers import (
     UserLoginSerializer,
     UserSerializer,
+    UserRegistrationSerializer,
     CookieTokenRefreshSerializer,
 )
 from rest_framework.generics import (
@@ -28,7 +29,7 @@ from rest_framework_simplejwt.views import TokenRefreshView
 
 class CreateUserView(CreateAPIView):
     queryset = User.objects.all()
-    serializer_class = UserSerializer
+    serializer_class = UserRegistrationSerializer
     permission_classes = [AllowAny]
     
 
@@ -97,6 +98,7 @@ class UserLogoutView(APIView):
             res = Response()
             res.delete_cookie(settings.SIMPLE_JWT['AUTH_COOKIE'])
             res.delete_cookie(settings.SIMPLE_JWT['AUTH_COOKIE_REFRESH'])
+            res.delete_cookie('csrftoken')
             res.delete_cookie('X-CSRFToken')
             
             return res
